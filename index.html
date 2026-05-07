@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Novel Metric Operator Theory — Tawfiq & Majd Jallad | ISEF 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0c0f1a;
+      --bg2:       #111625;
+      --fg:        #f5f0e8;
+      --muted:     #7a829a;
+      --primary:   #9b7dea;
+      --accent:    #f5be45;
+      --teal:      #38d9b4;
+      --rose:      #e06b8b;
+      --border:    rgba(255,255,255,0.08);
+      --card:      rgba(17,22,37,0.85);
+      --radius:    1rem;
+      --serif:     'EB Garamond', Georgia, serif;
+      --sans:      'Inter', system-ui, sans-serif;
+      --mono:      'Menlo', 'Consolas', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── PROGRESS BAR ───────────────────────────────────────── */
+    #progress-bar {
+      position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+      z-index: 1000; transition: width 0.1s linear;
+    }
+
+    /* ─── BACKGROUND ─────────────────────────────────────────── */
+    #bg-layer {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    }
+    .orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); opacity: 0.15;
+    }
+    .orb-1 { width: 70vw; height: 70vw; top: -20%; left: -10%; background: radial-gradient(circle, #9b7dea 0%, transparent 70%); }
+    .orb-2 { width: 60vw; height: 60vw; bottom: -20%; right: -10%; background: radial-gradient(circle, #f5be45 0%, transparent 70%); opacity: 0.1; }
+    .grid-svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.03; }
+
+    .float-sym {
+      position: absolute;
+      font-family: var(--serif);
+      color: var(--primary);
+      opacity: 0.12;
+      animation: float linear infinite;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(-2deg); opacity: 0.08; }
+      33%       { transform: translateY(-20px) rotate(3deg); opacity: 0.2; }
+      66%       { transform: translateY(-8px) rotate(-1deg); opacity: 0.12; }
+    }
+
+    .ring {
+      position: absolute; border-radius: 50%;
+      border: 1px solid rgba(155, 125, 234, 0.12);
+      animation: spin linear infinite;
+    }
+    .ring-1 { width: 280px; height: 280px; top: 8%; right: 4%; animation-duration: 80s; }
+    .ring-2 { width: 200px; height: 200px; bottom: 12%; left: 6%; border-color: rgba(245,190,69,0.10); animation-duration: 60s; animation-direction: reverse; }
+
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* ─── LAYOUT ─────────────────────────────────────────────── */
+    .container { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
+
+    /* ─── REVEAL ANIMATION ───────────────────────────────────── */
+    .reveal {
+      opacity: 0; transform: translateY(36px);
+      transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ─── HERO ────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 6rem 1.5rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    #hero-img {
+      position: absolute; inset: 0; z-index: 0;
+    }
+    #hero-img img {
+      width: 100%; height: 100%; object-fit: cover; opacity: 0.22;
+    }
+    #hero-img::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(12,15,26,0.55) 0%, rgba(12,15,26,0.35) 40%, var(--bg) 100%);
+    }
+    #hero-content { position: relative; z-index: 1; max-width: 860px; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 0.35rem 1rem; border-radius: 9999px;
+      background: rgba(245,190,69,0.1); border: 1px solid rgba(245,190,69,0.28);
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 2rem;
+    }
+    .badge-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(0.85); } }
+
+    .hero-title {
+      font-family: var(--serif); font-size: clamp(3rem, 8vw, 5.5rem);
+      line-height: 1.05; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 0.5rem;
+    }
+    .hero-title-plain { color: var(--fg); }
+    .hero-title-grad {
+      background: linear-gradient(135deg, var(--primary), #b28cf0, var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      color: rgba(245,240,232,0.65); max-width: 740px; margin: 1.2rem auto 0.8rem;
+      line-height: 1.5;
+    }
+    .hero-authors { font-size: 0.95rem; color: var(--muted); margin-top: 0.5rem; }
+
+    .scroll-hint {
+      margin-top: 3.5rem; display: flex; flex-direction: column;
+      align-items: center; gap: 0.3rem; color: rgba(255,255,255,0.25);
+      font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .scroll-arrow {
+      width: 16px; height: 16px;
+      border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+      transform: rotate(45deg);
+      animation: bounce 1.6s ease-in-out infinite;
+    }
+    @keyframes bounce { 0%,100% { transform: rotate(45deg) translate(0,0); } 50% { transform: rotate(45deg) translate(4px,4px); } }
+
+    /* ─── STATS BAR ───────────────────────────────────────────── */
+    #stats {
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      background: rgba(17,22,37,0.7); backdrop-filter: blur(12px);
+      padding: 2.5rem 1.5rem; position: relative; z-index: 1;
+    }
+    .stats-grid {
+      max-width: 700px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; text-align: center;
+    }
+    .stat-divider { border-right: 1px solid var(--border); }
+    .stat-val {
+      font-family: var(--serif); font-size: clamp(2rem, 5vw, 3rem);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; font-weight: 500; margin-bottom: 0.25rem;
+    }
+    .stat-label { font-size: 0.78rem; color: var(--muted); font-weight: 500; line-height: 1.3; }
+
+    /* ─── SECTIONS ────────────────────────────────────────────── */
+    .sections-wrap { padding: 5rem 0 8rem; }
+    .section { margin-bottom: 7rem; }
+
+    .section-label {
+      display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem;
+    }
+    .section-num {
+      font-family: var(--mono); font-size: 0.7rem; font-weight: 700;
+      background: rgba(245,190,69,0.12); border: 1px solid rgba(245,190,69,0.25);
+      color: var(--accent); padding: 0.2rem 0.6rem; border-radius: 6px;
+    }
+    .section-title {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .section-divider {
+      flex: 1; height: 1px;
+      background: linear-gradient(to right, var(--border), transparent);
+    }
+
+    /* ─── GRADIENT BORDER CARD ───────────────────────────────── */
+    .grad-card {
+      position: relative; border-radius: var(--radius);
+      background: var(--card);
+    }
+    .grad-card::before {
+      content: ''; position: absolute; inset: 0; border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(155,125,234,0.6), rgba(245,190,69,0.3), transparent 60%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* ─── PROBLEM SECTION ────────────────────────────────────── */
+    .problem-quote {
+      padding: 2rem 2.5rem; margin-bottom: 1.5rem;
+    }
+    .problem-quote p {
+      font-family: var(--serif); font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      line-height: 1.65; color: rgba(245,240,232,0.9);
+    }
+    .code-inline {
+      font-family: var(--mono); font-size: 0.9em;
+      background: rgba(155,125,234,0.15); color: var(--primary);
+      padding: 0.1em 0.4em; border-radius: 4px;
+    }
+    .text-primary { color: var(--primary); font-weight: 500; }
+    .text-accent  { color: var(--accent);  font-weight: 500; }
+
+    /* ─── INTRODUCTION ────────────────────────────────────────── */
+    .intro-grid {
+      display: grid; grid-template-columns: 1fr; gap: 1.5rem;
+    }
+    @media (min-width: 700px) {
+      .intro-grid { grid-template-columns: 3fr 2fr; }
+    }
+    .intro-text p { font-size: 1.05rem; color: var(--muted); line-height: 1.75; margin-bottom: 1rem; }
+    .intro-text em { color: rgba(245,240,232,0.8); font-style: italic; }
+
+    .challenge-card {
+      border-radius: var(--radius); overflow: hidden;
+      border: 1px solid rgba(155,125,234,0.18);
+      background: rgba(155,125,234,0.04);
+    }
+    .challenge-img { height: 11rem; overflow: hidden; }
+    .challenge-img img { width: 100%; height: 100%; object-fit: cover; }
+    .challenge-body { padding: 1.4rem; }
+    .challenge-body .label {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.8rem; font-weight: 600; color: var(--fg); margin-bottom: 0.8rem;
+    }
+    .icon-sm { width: 16px; height: 16px; }
+    .challenge-body blockquote {
+      font-family: var(--serif); font-style: italic; font-size: 0.92rem;
+      color: var(--muted); line-height: 1.65; margin-bottom: 0.75rem;
+    }
+    .challenge-body blockquote span { color: var(--fg); font-style: normal; }
+    .challenge-footer {
+      padding-top: 0.75rem; border-top: 1px solid rgba(155,125,234,0.12);
+      font-size: 0.82rem; color: var(--primary); font-weight: 500;
+    }
+
+    /* ─── THEOREMS ────────────────────────────────────────────── */
+    .theorem-card {
+      border-radius: var(--radius); border: 1px solid;
+      padding: 2rem 2.2rem; margin-bottom: 1.2rem;
+      position: relative; overflow: hidden;
+      transition: box-shadow 0.4s ease;
+    }
+    .theorem-card:hover { box-shadow: 0 0 50px -12px; }
+    .theorem-primary { border-color: rgba(155,125,234,0.3); background: rgba(155,125,234,0.04); }
+    .theorem-primary:hover { box-shadow-color: rgba(155,125,234,0.35); }
+    .theorem-accent   { border-color: rgba(245,190,69,0.3);  background: rgba(245,190,69,0.03);  }
+    .theorem-teal     { border-color: rgba(56,217,180,0.3);  background: rgba(56,217,180,0.03);  }
+
+    .theorem-ghost {
+      position: absolute; top: -0.5rem; right: 1rem;
+      font-family: var(--serif); font-weight: 700; font-size: 5.5rem;
+      line-height: 1; pointer-events: none; user-select: none;
+      opacity: 0.07;
+    }
+    .theorem-primary .theorem-ghost { color: var(--primary); }
+    .theorem-accent   .theorem-ghost { color: var(--accent); }
+    .theorem-teal     .theorem-ghost { color: var(--teal); }
+
+    .theorem-badge {
+      display: inline-block; font-family: var(--mono); font-size: 0.68rem;
+      font-weight: 700; padding: 0.2rem 0.7rem; border-radius: 999px;
+      border: 1px solid; margin-bottom: 0.75rem;
+    }
+    .badge-primary { background: rgba(155,125,234,0.1); color: var(--primary); border-color: rgba(155,125,234,0.3); }
+    .badge-accent  { background: rgba(245,190,69,0.1);  color: var(--accent);  border-color: rgba(245,190,69,0.3);  }
+    .badge-teal    { background: rgba(56,217,180,0.1);  color: var(--teal);    border-color: rgba(56,217,180,0.3);  }
+
+    .theorem-title {
+      font-family: var(--serif); font-size: 1.3rem; color: var(--fg);
+      margin-bottom: 0.85rem; font-weight: 500; position: relative; z-index: 1;
+    }
+    .theorem-body { font-size: 0.97rem; color: var(--muted); line-height: 1.75; position: relative; z-index: 1; }
+
+    .formula-box {
+      margin-top: 1.25rem; border-radius: 0.6rem; border: 1px solid;
+      padding: 1.2rem 1.5rem; text-align: center;
+    }
+    .formula-box-primary { border-color: rgba(155,125,234,0.22); background: rgba(155,125,234,0.06); }
+    .formula-label { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); margin-bottom: 0.4rem; }
+    .formula-math {
+      font-family: var(--serif); font-size: 1.6rem; color: var(--fg); line-height: 1.3;
+    }
+    .formula-math sub { font-size: 0.6em; color: var(--muted); }
+
+    /* ─── PROOF STEPS ─────────────────────────────────────────── */
+    .proof-timeline { position: relative; padding-left: 2.8rem; }
+    .proof-timeline::before {
+      content: ''; position: absolute; left: 18px; top: 1.5rem; bottom: 2rem;
+      width: 1px;
+      background: linear-gradient(to bottom, rgba(155,125,234,0.5), rgba(245,190,69,0.2), transparent);
+    }
+    .proof-step { position: relative; margin-bottom: 2.5rem; }
+    .proof-node {
+      position: absolute; left: -2.8rem; top: 0.1rem;
+      width: 2rem; height: 2rem; border-radius: 50%;
+      background: var(--bg2); border: 1.5px solid rgba(155,125,234,0.45);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; color: var(--primary); z-index: 1;
+    }
+    .proof-heading { font-size: 1.05rem; font-weight: 600; color: var(--fg); margin-bottom: 0.5rem; }
+    .proof-text { font-size: 0.97rem; color: var(--muted); line-height: 1.75; }
+
+    /* ─── VALIDATION ──────────────────────────────────────────── */
+    .validation-grid { display: grid; gap: 1rem; margin-bottom: 1rem; }
+    @media (min-width: 600px) { .validation-grid { grid-template-columns: 1fr 1fr; } }
+
+    .val-card {
+      border-radius: var(--radius); border: 1px solid; padding: 1.6rem;
+    }
+    .val-green { border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.03); }
+    .val-red   { border-color: rgba(239,68,68,0.3);  background: rgba(239,68,68,0.03);  }
+
+    .val-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+    .val-icon {
+      width: 2.2rem; height: 2.2rem; border-radius: 0.6rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; border: 1px solid;
+    }
+    .val-icon-green { background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.25); color: #34d399; }
+    .val-icon-red   { background: rgba(239,68,68,0.1);  border-color: rgba(239,68,68,0.25);  color: #f87171; }
+
+    .val-epsilon { font-family: var(--mono); font-size: 0.78rem; }
+    .val-epsilon-green { color: #34d399; background: rgba(52,211,153,0.1); padding: 0.15rem 0.5rem; border-radius: 5px; }
+    .val-epsilon-red   { color: #f87171; background: rgba(239,68,68,0.1);  padding: 0.15rem 0.5rem; border-radius: 5px; }
+
+    .val-title { font-size: 1rem; font-weight: 600; color: var(--fg); margin-bottom: 0.8rem; }
+    .val-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .val-list li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.87rem; color: var(--muted); }
+    .val-check { color: #34d399; font-weight: bold; font-size: 1rem; line-height: 1.1; flex-shrink: 0; }
+    .val-warn  { color: #f87171; font-weight: bold; font-size: 0.9rem; line-height: 1.2; flex-shrink: 0; }
+
+    .val-conclusion {
+      border-radius: var(--radius); border: 1px solid rgba(155,125,234,0.22);
+      background: linear-gradient(135deg, rgba(155,125,234,0.07), rgba(245,190,69,0.04));
+      padding: 1.25rem 1.5rem; text-align: center;
+    }
+    .val-conclusion-icon { font-size: 1.1rem; margin-bottom: 0.4rem; }
+    .val-conclusion p { font-size: 0.94rem; color: rgba(245,240,232,0.85); line-height: 1.6; }
+
+    /* ─── APPLICATION CARDS ───────────────────────────────────── */
+    .apps-grid { display: grid; gap: 1.2rem; }
+    @media (min-width: 600px) { .apps-grid { grid-template-columns: 1fr 1fr; } }
+
+    .app-card {
+      border-radius: var(--radius); border: 1px solid var(--border);
+      background: var(--bg2); overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .app-card:hover { border-color: rgba(255,255,255,0.18); transform: translateY(-2px); }
+
+    .app-img { height: 11rem; overflow: hidden; position: relative; }
+    .app-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .app-card:hover .app-img img { transform: scale(1.05); }
+    .app-img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, var(--bg2) 100%);
+    }
+
+    .app-body { padding: 1.4rem 1.5rem; }
+    .app-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+    .app-icon {
+      width: 2.4rem; height: 2.4rem; border-radius: 0.6rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; border: 1px solid; flex-shrink: 0;
+    }
+    .app-title { font-size: 1rem; font-weight: 600; color: var(--fg); }
+    .app-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .app-list li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.85rem; color: var(--muted); line-height: 1.45; }
+    .app-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 0.45em; flex-shrink: 0; }
+
+    /* ─── ABOUT ───────────────────────────────────────────────── */
+    .about-inner {
+      padding: 2.5rem 2.5rem 2rem;
+    }
+    @media (min-width: 680px) {
+      .about-layout { display: flex; gap: 2.5rem; align-items: flex-start; }
+    }
+    .about-names { flex: 1; }
+    .about-name {
+      font-family: var(--serif); font-size: clamp(1.8rem, 4vw, 2.4rem);
+      color: var(--fg); font-weight: 500; line-height: 1.2;
+    }
+    .about-role-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(245,190,69,0.1); border: 1px solid rgba(245,190,69,0.22);
+      color: var(--accent); font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.3rem 0.9rem; border-radius: 999px; margin: 1rem 0 1.2rem;
+    }
+    .about-desc { font-size: 0.97rem; color: var(--muted); line-height: 1.7; }
+    .about-sidebar {
+      flex-shrink: 0; width: 100%;
+      border-radius: var(--radius); background: rgba(155,125,234,0.05);
+      border: 1px solid rgba(155,125,234,0.15); padding: 1.4rem; margin-top: 1.5rem;
+    }
+    @media (min-width: 680px) { .about-sidebar { width: 230px; margin-top: 0; } }
+    .about-sidebar-title { font-size: 0.82rem; font-weight: 600; color: var(--fg); margin-bottom: 0.75rem; }
+    .about-sidebar p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border); padding: 2.5rem 1.5rem;
+      text-align: center;
+    }
+    footer p { font-family: var(--serif); font-style: italic; font-size: 0.85rem; color: rgba(255,255,255,0.25); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .stat-divider { border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+      .problem-quote { padding: 1.5rem; }
+      .theorem-card { padding: 1.5rem; }
+      .about-inner { padding: 1.5rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="progress-bar"></div>
+
+  <!-- BACKGROUND -->
+  <div id="bg-layer">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <svg class="grid-svg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#grid)"/>
+    </svg>
+    <!-- Floating math symbols -->
+    <span class="float-sym" style="left:5%;top:10%;font-size:22px;animation-duration:8s;animation-delay:0s">ℋ</span>
+    <span class="float-sym" style="left:18%;top:22%;font-size:16px;animation-duration:6s;animation-delay:1s">∗</span>
+    <span class="float-sym" style="left:32%;top:8%;font-size:28px;animation-duration:10s;animation-delay:0.5s">𝒥</span>
+    <span class="float-sym" style="left:50%;top:15%;font-size:18px;animation-duration:7s;animation-delay:2s">⟨·,·⟩</span>
+    <span class="float-sym" style="left:67%;top:5%;font-size:24px;animation-duration:9s;animation-delay:1.5s">∈</span>
+    <span class="float-sym" style="left:80%;top:18%;font-size:20px;animation-duration:11s;animation-delay:0.8s">ε</span>
+    <span class="float-sym" style="left:90%;top:35%;font-size:26px;animation-duration:8s;animation-delay:3s">G</span>
+    <span class="float-sym" style="left:8%;top:55%;font-size:18px;animation-duration:13s;animation-delay:1.2s">∀</span>
+    <span class="float-sym" style="left:25%;top:70%;font-size:22px;animation-duration:9s;animation-delay:0.3s">Σ</span>
+    <span class="float-sym" style="left:75%;top:65%;font-size:16px;animation-duration:7s;animation-delay:2.5s">λ</span>
+    <span class="float-sym" style="left:60%;top:80%;font-size:20px;animation-duration:10s;animation-delay:1.8s">||·||</span>
+    <span class="float-sym" style="left:42%;top:88%;font-size:24px;animation-duration:12s;animation-delay:0.6s">σ(H)</span>
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+  </div>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div id="hero-img">
+      <img src="hero-quantum.png" alt="" />
+    </div>
+    <div id="hero-content">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        ISEF 2026 Finalist
+      </div>
+      <h1 class="hero-title">
+        <span class="hero-title-plain">Novel Metric</span><br>
+        <span class="hero-title-grad">Operator Theory</span>
+      </h1>
+      <p class="hero-subtitle">
+        A Solution to a Longstanding Open Problem in Operator Theory and Quantum Mechanics
+      </p>
+      <p class="hero-authors">Tawfiq Jallad &nbsp;&middot;&nbsp; Majd Jallad</p>
+      <div class="scroll-hint">
+        <span>Explore</span>
+        <div class="scroll-arrow"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div id="stats">
+    <div class="stats-grid">
+      <div class="stat-divider reveal">
+        <div class="stat-val">3</div>
+        <div class="stat-label">Novel Theorems Proven</div>
+      </div>
+      <div class="stat-divider reveal reveal-delay-1">
+        <div class="stat-val">∞→0</div>
+        <div class="stat-label">Gap Closed: Existence to Formula</div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="stat-val">4</div>
+        <div class="stat-label">Real-World Application Domains</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="sections-wrap">
+    <div class="container">
+
+      <!-- 01 PROBLEM & MOTIVATION -->
+      <section class="section" id="s-problem">
+        <div class="section-label reveal">
+          <span class="section-num">01</span>
+          <span class="section-title">Problem &amp; Motivation</span>
+          <div class="section-divider"></div>
+        </div>
+
+        <div class="grad-card problem-quote reveal reveal-delay-1">
+          <p>
+            A central open problem in operator theory and PT-symmetric quantum mechanics is how to
+            construct metric operators <em>explicitly</em> for non-Hermitian
+            <code class="code-inline">J</code>-self-adjoint operators in Krein spaces.
+          </p>
+        </div>
+
+        <p class="reveal reveal-delay-2" style="font-size:1.02rem;color:var(--muted);line-height:1.8;">
+          Existing theory often guarantees existence, but not a concrete formula. This project solves
+          that gap in the finite-dimensional setting by showing that, for a positive invariant subspace
+          isolated by a spectral gap, the metric operator is
+          <span class="text-primary">uniquely determined</span> and can be written explicitly as the
+          <span class="text-accent">Gram matrix of the J-inner product</span>. This gives a computable
+          framework for turning a non-Hermitian operator into a self-adjoint one on the relevant
+          subspace, with direct applications to stability analysis and quantum mechanics.
+        </p>
+      </section>
+
+      <!-- 02 INTRODUCTION -->
+      <section class="section" id="s-intro">
+        <div class="section-label reveal">
+          <span class="section-num">02</span>
+          <span class="section-title">Introduction</span>
+          <div class="section-divider"></div>
+        </div>
+
+        <div class="intro-grid">
+          <div class="intro-text reveal reveal-delay-1">
+            <p>
+              For many years, one of the quiet but fundamental problems in non-Hermitian operator
+              theory has been this: when an operator is not Hermitian in the usual sense, can we still
+              find the right inner product that reveals a <em>hidden self-adjoint structure</em>?
+              This question becomes especially deep in Krein spaces, where the geometry is indefinite
+              and the usual notion of length and orthogonality breaks down.
+            </p>
+            <p>
+              In PT-symmetric quantum mechanics, this is not just a mathematical curiosity — it is the
+              difference between a system that looks physically inconsistent and one that can be given
+              a meaningful, stable interpretation. The real obstacle has never been existence alone.
+            </p>
+          </div>
+          <div class="reveal reveal-delay-2">
+            <div class="challenge-card">
+              <div class="challenge-img">
+                <img src="krein-space.png" alt="Krein space geometry visualization" />
+              </div>
+              <div class="challenge-body">
+                <div class="label">
+                  <svg class="icon-sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                  </svg>
+                  The Core Challenge
+                </div>
+                <blockquote>
+                  "Abstract theorems guarantee a metric exists, but leave open the harder question:
+                  <span>what is it exactly, and can it be computed?</span>"
+                </blockquote>
+                <div class="challenge-footer">This project closes that gap in the finite-dimensional setting.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 KEY THEOREMS -->
+      <section class="section" id="s-theorems">
+        <div class="section-label reveal">
+          <span class="section-num">03</span>
+          <span class="section-title">Key Theorems</span>
+          <div class="section-divider"></div>
+        </div>
+        <p class="reveal" style="font-size:1.02rem;color:var(--muted);margin-bottom:2rem;">
+          Three landmark results that solve the open problem constructively.
+        </p>
+
+        <div class="theorem-card theorem-primary reveal reveal-delay-1">
+          <div class="theorem-ghost">3.1</div>
+          <span class="theorem-badge badge-primary">Theorem 3.1</span>
+          <h3 class="theorem-title">Existence, Uniqueness &amp; Intertwining of the Metric</h3>
+          <p class="theorem-body">
+            Let <code class="code-inline">ℋ</code> be a <code class="code-inline">J</code>-self-adjoint
+            matrix on a finite-dimensional Krein space, and let <code class="code-inline">P</code> be a
+            <code class="code-inline">d</code>-dimensional subspace that is positive under
+            <code class="code-inline">J</code> and invariant under <code class="code-inline">ℋ</code>.
+            Then there exists a <strong style="color:var(--fg)">unique invertible operator</strong> —
+            the metric — satisfying the intertwining relation with <code class="code-inline">ℋ</code>.
+          </p>
+          <div class="formula-box formula-box-primary">
+            <p class="formula-label">Gram Matrix Formula</p>
+            <p class="formula-math">
+              G<sub>ij</sub> = ⟨e<sub>i</sub>, <span style="color:var(--primary)">J</span> · e<sub>j</sub>⟩
+            </p>
+          </div>
+        </div>
+
+        <div class="theorem-card theorem-accent reveal reveal-delay-1">
+          <div class="theorem-ghost">3.2</div>
+          <span class="theorem-badge badge-accent">Lemma 3.2</span>
+          <h3 class="theorem-title">Lipschitz Continuity of the Gram Map</h3>
+          <p class="theorem-body">
+            Let <code style="font-family:var(--mono);color:var(--accent)">P</code> and
+            <code style="font-family:var(--mono);color:var(--accent)">P'</code> be two orthogonal
+            projections onto <code style="font-family:var(--mono);color:var(--accent)">d</code>-dimensional
+            subspaces with the same <code style="font-family:var(--mono);color:var(--accent)">J</code>-positivity
+            condition. The map from projection to Gram matrix is
+            <strong style="color:var(--fg)">Lipschitz continuous</strong> with constant
+            <code style="font-family:var(--mono);color:var(--accent)">2||J||</code> to first order.
+            Small changes in the subspace produce small, controlled changes in the metric.
+          </p>
+        </div>
+
+        <div class="theorem-card theorem-teal reveal reveal-delay-2">
+          <div class="theorem-ghost">3.3</div>
+          <span class="theorem-badge badge-teal">Theorem 3.3</span>
+          <h3 class="theorem-title">Stability Under Perturbations</h3>
+          <p class="theorem-body">
+            For an analytic perturbation
+            <code style="font-family:var(--mono);color:var(--teal)">ℋ(ε) = ℋ + εV</code>
+            where <code style="font-family:var(--mono);color:var(--teal)">V</code> is also
+            <code style="font-family:var(--mono);color:var(--teal)">J</code>-self-adjoint, the metric operator
+            <strong style="color:var(--fg)">varies analytically in ε</strong> for small |ε|.
+            The first-order change satisfies a Lipschitz bound, proving the construction is robust
+            against small perturbations.
+          </p>
+        </div>
+      </section>
+
+      <!-- 04 PROOF STRATEGY -->
+      <section class="section" id="s-proof">
+        <div class="section-label reveal">
+          <span class="section-num">04</span>
+          <span class="section-title">Proof Strategy</span>
+          <div class="section-divider"></div>
+        </div>
+
+        <div class="proof-timeline">
+          <div class="proof-step reveal">
+            <div class="proof-node">1</div>
+            <h4 class="proof-heading">Positive-Definite Restriction</h4>
+            <p class="proof-text">
+              Since <code class="code-inline">P</code> is positive under <code class="code-inline">J</code>,
+              the <code class="code-inline">J</code>-inner product restricted to <code class="code-inline">P</code>
+              becomes a genuine positive-definite Hermitian form. By the finite-dimensional Riesz
+              representation theorem, there is a unique positive-definite self-adjoint operator
+              <code style="font-family:var(--mono);color:var(--accent)">G</code> such that
+              <code style="font-family:var(--mono)">[x,y]<sub>J</sub> = ⟨x, Gy⟩</code>
+              for all <code class="code-inline">x,y ∈ P</code>.
+            </p>
+          </div>
+          <div class="proof-step reveal reveal-delay-1">
+            <div class="proof-node">2</div>
+            <h4 class="proof-heading">Gram Matrix Formula</h4>
+            <p class="proof-text">
+              The explicit formula <code style="font-family:var(--mono);color:var(--accent)">G<sub>ij</sub> = ⟨e<sub>i</sub>, J·e<sub>j</sub>⟩</code>
+              in any orthonormal basis. Positivity guarantees <code style="font-family:var(--mono);color:var(--accent)">G</code>
+              is invertible — a concrete, computable object rather than an abstract existence result.
+            </p>
+          </div>
+          <div class="proof-step reveal reveal-delay-2">
+            <div class="proof-node">3</div>
+            <h4 class="proof-heading">Intertwining Relation</h4>
+            <p class="proof-text">
+              Using the <code class="code-inline">J</code>-self-adjointness of
+              <code class="code-inline">ℋ</code> and the invariance of <code class="code-inline">P</code>,
+              one shows <code class="code-inline">ℋ*G = Gℋ</code> on <code class="code-inline">P</code>.
+              This makes <code class="code-inline">ℋ</code> Hermitian in the new inner product — the
+              hidden self-adjoint structure is revealed.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 NUMERICAL VALIDATION -->
+      <section class="section" id="s-validation">
+        <div class="section-label reveal">
+          <span class="section-num">05</span>
+          <span class="section-title">Numerical Validation</span>
+          <div class="section-divider"></div>
+        </div>
+        <p class="reveal" style="font-size:1.02rem;color:var(--muted);margin-bottom:1.5rem;">
+          Computational experiments independently confirmed all theoretical predictions.
+        </p>
+
+        <div class="validation-grid">
+          <div class="val-card val-green reveal">
+            <div class="val-header">
+              <div class="val-icon val-icon-green">✓</div>
+              <span class="val-epsilon val-epsilon-green">ε ≤ 0.00001</span>
+            </div>
+            <p class="val-title">Perfect Stability</p>
+            <ul class="val-list">
+              <li><span class="val-check">✓</span> Metric remained positive-definite</li>
+              <li><span class="val-check">✓</span> Eigenvalues stayed real and positive</li>
+              <li><span class="val-check">✓</span> Construction fully validated</li>
+            </ul>
+          </div>
+
+          <div class="val-card val-red reveal reveal-delay-1">
+            <div class="val-header">
+              <div class="val-icon val-icon-red">!</div>
+              <span class="val-epsilon val-epsilon-red">ε ≥ 0.001</span>
+            </div>
+            <p class="val-title">Stability Breakdown</p>
+            <ul class="val-list">
+              <li><span class="val-warn">!</span> Stability started degrading</li>
+              <li><span class="val-warn">!</span> Some eigenvalues turned negative</li>
+              <li><span class="val-warn">!</span> Near-degenerate spectra sensitive</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="val-conclusion reveal reveal-delay-2">
+          <div class="val-conclusion-icon">💡</div>
+          <p>
+            <strong style="color:var(--accent)">Conclusion:</strong> The method is robust for small
+            perturbations, and its stability limits are well-defined and reportable — a sign of a
+            mature, honest theory.
+          </p>
+        </div>
+      </section>
+
+      <!-- 06 APPLICATIONS -->
+      <section class="section" id="s-applications">
+        <div class="section-label reveal">
+          <span class="section-num">06</span>
+          <span class="section-title">Real-World Impact</span>
+          <div class="section-divider"></div>
+        </div>
+        <p class="reveal" style="font-size:1.02rem;color:var(--muted);margin-bottom:1.5rem;">
+          The constructive framework opens concrete pathways across four engineering and science domains.
+        </p>
+
+        <div class="apps-grid">
+          <!-- Optical Engineering -->
+          <div class="app-card reveal">
+            <div class="app-img">
+              <img src="app-optics.png" alt="Photonic waveguide optical engineering" />
+              <div class="app-img-overlay"></div>
+            </div>
+            <div class="app-body">
+              <div class="app-header">
+                <div class="app-icon" style="background:rgba(155,125,234,0.12);border-color:rgba(155,125,234,0.3);color:var(--primary)">
+                  ∿
+                </div>
+                <span class="app-title">Optical Engineering</span>
+              </div>
+              <ul class="app-list">
+                <li><span class="app-dot" style="background:var(--primary)"></span>Waveguides with built-in gain/loss balance</li>
+                <li><span class="app-dot" style="background:var(--primary)"></span>Optical switches without moving parts</li>
+                <li><span class="app-dot" style="background:var(--primary)"></span>Ultra-sensitive photonic sensors</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Quantum Technology -->
+          <div class="app-card reveal reveal-delay-1">
+            <div class="app-img">
+              <img src="app-quantum.png" alt="Quantum technology visualization" />
+              <div class="app-img-overlay"></div>
+            </div>
+            <div class="app-body">
+              <div class="app-header">
+                <div class="app-icon" style="background:rgba(245,190,69,0.12);border-color:rgba(245,190,69,0.3);color:var(--accent)">
+                  ⚛
+                </div>
+                <span class="app-title">Quantum Technology</span>
+              </div>
+              <ul class="app-list">
+                <li><span class="app-dot" style="background:var(--accent)"></span>Non-Hermitian quantum mechanics frameworks</li>
+                <li><span class="app-dot" style="background:var(--accent)"></span>Exotic quantum sensor design</li>
+                <li><span class="app-dot" style="background:var(--accent)"></span>Open quantum systems analysis</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Mechanical Engineering -->
+          <div class="app-card reveal reveal-delay-1">
+            <div class="app-img">
+              <img src="app-mechanical.png" alt="Mechanical resonance engineering" />
+              <div class="app-img-overlay"></div>
+            </div>
+            <div class="app-body">
+              <div class="app-header">
+                <div class="app-icon" style="background:rgba(56,217,180,0.12);border-color:rgba(56,217,180,0.3);color:var(--teal)">
+                  ⚙
+                </div>
+                <span class="app-title">Mechanical Engineering</span>
+              </div>
+              <ul class="app-list">
+                <li><span class="app-dot" style="background:var(--teal)"></span>Vibrating structures with damping</li>
+                <li><span class="app-dot" style="background:var(--teal)"></span>Stable control system design</li>
+                <li><span class="app-dot" style="background:var(--teal)"></span>Resonance behavior prediction</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Laser Technology -->
+          <div class="app-card reveal reveal-delay-2">
+            <div class="app-img">
+              <img src="app-laser.png" alt="Laser technology" />
+              <div class="app-img-overlay"></div>
+            </div>
+            <div class="app-body">
+              <div class="app-header">
+                <div class="app-icon" style="background:rgba(224,107,139,0.12);border-color:rgba(224,107,139,0.3);color:var(--rose)">
+                  ⚡
+                </div>
+                <span class="app-title">Laser Technology</span>
+              </div>
+              <ul class="app-list">
+                <li><span class="app-dot" style="background:var(--rose)"></span>Advanced laser design principles</li>
+                <li><span class="app-dot" style="background:var(--rose)"></span>Photonic system precision engineering</li>
+                <li><span class="app-dot" style="background:var(--rose)"></span>High-performance optical amplifiers</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 07 ABOUT -->
+      <section class="section" id="s-about">
+        <div class="section-label reveal">
+          <span class="section-num">07</span>
+          <span class="section-title">About the Researchers</span>
+          <div class="section-divider"></div>
+        </div>
+
+        <div class="grad-card reveal reveal-delay-1">
+          <div class="about-inner">
+            <div class="about-layout">
+              <div class="about-names">
+                <p class="about-name">Tawfiq Jallad</p>
+                <p class="about-name">Majd Jallad</p>
+                <div class="about-role-badge">
+                  <span>🌐</span> ISEF 2026 Finalists
+                </div>
+                <p class="about-desc">
+                  Inspiration for this research came from an Advanced Operator Theory course and
+                  experience through GHIS. All mathematical symbols and equations were carefully
+                  constructed using LaTeX, 2026.
+                </p>
+              </div>
+              <div class="about-sidebar">
+                <p class="about-sidebar-title">Research Significance</p>
+                <p>
+                  This work bridges abstract operator theory and applicable quantum mechanics —
+                  turning an elegant existence problem into a concrete, computable framework with
+                  real engineering impact.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Novel Metric Operator Theory &nbsp;&middot;&nbsp; Tawfiq Jallad &amp; Majd Jallad &nbsp;&middot;&nbsp; ISEF 2026</p>
+  </footer>
+
+  <script>
+    // ── Scroll progress bar ───────────────────────────────────────
+    const bar = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => {
+      const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+      bar.style.width = Math.min(pct, 100) + '%';
+    }, { passive: true });
+
+    // ── Scroll-reveal via IntersectionObserver ────────────────────
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ── Hero parallax ─────────────────────────────────────────────
+    const heroImg = document.getElementById('hero-img');
+    const heroContent = document.getElementById('hero-content');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (heroImg) heroImg.style.transform = `translateY(${y * 0.35}px)`;
+      if (heroContent) {
+        heroContent.style.transform = `translateY(${y * 0.15}px)`;
+        heroContent.style.opacity = 1 - (y / (window.innerHeight * 0.7));
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>
